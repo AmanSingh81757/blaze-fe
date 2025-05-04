@@ -14,7 +14,7 @@ export default function Meet() {
 
   const handleReceiveMessage = (event: MessageEvent) => {
     try {
-      const parsedData = JSON.parse(event.data);
+      const parsedData = JSON.parse(event.data) as WebSocketMessage;
       console.log("Received JSON Parsed as:", parsedData);
 
       switch (parsedData.type) {
@@ -30,7 +30,7 @@ export default function Meet() {
           setTargetID("");
           break;
         default:
-          console.warn("Unknown message type:", parsedData.type);
+          console.warn("Unknown message type:", parsedData);
       }
     } catch (error) {
       console.error("Error parsing JSON:", error);
@@ -41,7 +41,7 @@ export default function Meet() {
     if (socket && message) {
       console.log(
         "Sending message:",
-        JSON.stringify({ type: "message", message: message })
+        JSON.stringify({ type: "message", message: message }),
       );
       socket.send(JSON.stringify({ type: "message", message: message }));
       setMessage("");
@@ -82,10 +82,7 @@ export default function Meet() {
     <section className="h-screen w-screen flex flex-col px-6">
       <ConnectionDetails clientID={clientID} targetID={targetID} />
       <div className="grid grid-cols-7 justify-between items-start w-full flex-grow bg-blue-100">
-        <VideoCallPanel
-          className="col-span-5"
-          socket={socket}
-        />
+        <VideoCallPanel className="col-span-5" socket={socket} />
         <ChatWindow
           className="col-span-2"
           message={message}
