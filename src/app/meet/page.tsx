@@ -69,30 +69,7 @@ export default function Meet() {
       console.error("WebSocket error:", error);
     };
 
-    ws.onmessage = (event) => {
-      try {
-        const parsedData = JSON.parse(event.data);
-        console.log("Received JSON Parsed as:", parsedData);
-
-        switch (parsedData.type) {
-          case "message":
-            handleReceiveMessage(event);
-            break;
-          case "matched":
-            setMessages([]);
-            setTargetID(parsedData.client_id);
-            break;
-          case "disconnected":
-            setMessages([]);
-            setTargetID("");
-            break;
-          default:
-            console.warn("Unknown message type:", parsedData.type);
-        }
-      } catch (error) {
-        console.error("Error parsing JSON:", error);
-      }
-    };
+    ws.onmessage = handleReceiveMessage;
 
     return () => {
       if (socket && socket.readyState === WebSocket.OPEN) {
