@@ -38,14 +38,29 @@ export default function Meet() {
   };
 
   const handleSendMessage = () => {
-    if (socket && message) {
-      console.log(
-        "Sending message:",
-        JSON.stringify({ type: "message", message: message }),
-      );
-      socket.send(JSON.stringify({ type: "message", message: message }));
-      setMessage("");
+    if (!message.trim()) {
+      console.error("Message is empty");
+      return;
     }
+    const msg: WebSocketMessage = {
+      type: "message",
+      message: message,
+    };
+    sendMessage(msg);
+    setMessage("");
+  };
+
+  const sendMessage = (msg: WebSocketMessage) => {
+    if (!socket) {
+      console.error("WebSocket is not connected");
+      return;
+    }
+    if (socket.readyState !== WebSocket.OPEN) {
+      console.error("WebSocket is not open");
+      return;
+    }
+    console.log("Sending message:", JSON.stringify(msg));
+    socket.send(JSON.stringify(msg));
   };
 
   useEffect(() => {
