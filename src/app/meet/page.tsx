@@ -12,6 +12,7 @@ export default function Meet() {
   const [messages, setMessages] = useState<string[]>([]);
   const [message, setMessage] = useState<string>("");
   const clientIDRef = useRef("");
+  const socketRef = useRef<WebSocket | null>(null);
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
   const localVideoRef = useRef<HTMLVideoElement>(null);
@@ -94,16 +95,16 @@ export default function Meet() {
   };
 
   const sendMessage = (msg: WebSocketMessage) => {
-    if (!socket) {
+    if (!socketRef.current) {
       console.error("WebSocket is not connected, cannot send message: ", msg);
       return;
     }
-    if (socket.readyState !== WebSocket.OPEN) {
+    if (socketRef.current.readyState !== WebSocket.OPEN) {
       console.error("WebSocket is not open");
       return;
     }
     console.log("Sending message:", JSON.stringify(msg));
-    socket.send(JSON.stringify(msg));
+    socketRef.current.send(JSON.stringify(msg));
   };
 
   async function startCamera(
@@ -123,9 +124,16 @@ export default function Meet() {
   }
 
   async function startWebRTC(isCaller: boolean) {
-    const pc = new RTCPeerConnection({
-      iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
-    });
+    const pcConfig: RTCConfiguration = {
+      iceServers: [
+        {
+          urls: [process.env.NEXT_PUBLIC_TURN_SERVER_URL || ""],
+          username: process.env.NEXT_PUBLIC_TURN_SERVER_USERNAME,
+          credential: process.env.NEXT_PUBLIC_TURN_SERVER_CREDENTIAL,
+        },
+      ],
+    };
+    const pc = new RTCPeerConnection(pcConfig);
     pcRef.current = pc;
     console.log("RTCPeerConnection created successfully.");
 
@@ -169,7 +177,8 @@ export default function Meet() {
     const id = initiateClientId();
     setClientID(id);
 
-    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     startCamera(localVideoRef, localStreamRef).catch((error) => {
       console.error("Error starting camera:", error);
     });
@@ -207,6 +216,12 @@ export default function Meet() {
   useEffect(() => {
     clientIDRef.current = clientID; // Keep the ref in sync with the state
   }, [clientID]);
+
+  // for socket
+  useEffect(() => {
+    socketRef.current = socket; // Keep the ref in sync with the state
+  }, [socket]);
+
   return (
     <section className="h-screen w-screen flex flex-col px-6">
       <ConnectionDetails clientID={clientID} targetID={targetID} />
