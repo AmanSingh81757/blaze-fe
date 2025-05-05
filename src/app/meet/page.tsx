@@ -11,6 +11,8 @@ export default function Meet() {
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [messages, setMessages] = useState<string[]>([]);
   const [message, setMessage] = useState<string>("");
+  const clientIDRef = useRef("");
+  const pcRef = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
@@ -24,9 +26,45 @@ export default function Meet() {
         case "message":
           setMessages((prevMessages) => [...prevMessages, parsedData.message]);
           break;
+
+        case "sdp-offer":
+          // Peer is calling us:
+          if (!pcRef.current) {
+            console.error("RTCPeerConnection is not initialized");
+            return;
+          }
+          await pcRef.current.setRemoteDescription(parsedData.data);
+          const answer = await pcRef.current.createAnswer();
+          await pcRef.current.setLocalDescription(answer);
+          const answerMsg: SDPAnswerMessage = {
+            type: "sdp-answer",
+            data: answer,
+          };
+          sendMessage(answerMsg);
+          break;
+
+        case "sdp-answer":
+          // They answered our offer:
+          if (!pcRef.current) {
+            console.error("RTCPeerConnection is not initialized");
+            return;
+          }
+          await pcRef.current.setRemoteDescription(parsedData.data);
+          break;
+
+        case "ice-candidate":
+          // They found a new network path:
+          if (!pcRef.current) {
+            console.error("RTCPeerConnection is not initialized");
+            return;
+          }
+          await pcRef.current.addIceCandidate(parsedData.data);
+          break;
+
         case "matched":
           setMessages([]);
           setTargetID(parsedData.client_id);
+          await startWebRTC(clientIDRef.current < parsedData.client_id;);
           break;
 
         case "disconnected":
@@ -57,7 +95,7 @@ export default function Meet() {
 
   const sendMessage = (msg: WebSocketMessage) => {
     if (!socket) {
-      console.error("WebSocket is not connected");
+      console.error("WebSocket is not connected, cannot send message: ", msg);
       return;
     }
     if (socket.readyState !== WebSocket.OPEN) {
@@ -81,6 +119,45 @@ export default function Meet() {
     if (localVideoRef.current) {
       localVideoRef.current.srcObject = localStream;
       console.log("Local video stream set successfully.");
+    }
+  }
+
+  async function startWebRTC(isCaller: boolean) {
+    const pc = new RTCPeerConnection({
+      iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+    });
+    pcRef.current = pc;
+    console.log("RTCPeerConnection created successfully.");
+
+    pc.onicecandidate = (e) => {
+      if (e.candidate) {
+        const msg: IceCandidateMessage = {
+          type: "ice-candidate",
+          data: e.candidate,
+        };
+        sendMessage(msg);
+        console.log("ICE candidate sent:", e.candidate);
+      }
+    };
+
+    pc.ontrack = (e) => {
+      if (remoteVideoRef.current) {
+        remoteVideoRef.current.srcObject = e.streams[0];
+      }
+    };
+
+    localStreamRef.current
+      .getTracks()
+      .forEach((track) => pc.addTrack(track, localStreamRef.current!));
+
+    if (isCaller) {
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+      const offerMsg: SDPMessage = {
+        type: "sdp-offer",
+        data: offer,
+      };
+      sendMessage(offerMsg);
     }
   }
 
@@ -118,6 +195,11 @@ export default function Meet() {
       }
     };
   }, []);
+
+  // for clientID
+  useEffect(() => {
+    clientIDRef.current = clientID; // Keep the ref in sync with the state
+  }, [clientID]);
   return (
     <section className="h-screen w-screen flex flex-col px-6">
       <ConnectionDetails clientID={clientID} targetID={targetID} />

@@ -1,5 +1,11 @@
 interface BaseMessage {
-  type: "message" | "matched" | "disconnected";
+  type:
+    | "message"
+    | "matched"
+    | "disconnected"
+    | "ice-candidate"
+    | "sdp-offer"
+    | "sdp-answer";
 }
 
 interface ChatMessage extends BaseMessage {
@@ -16,4 +22,26 @@ interface DisconnectedMessage extends BaseMessage {
   type: "disconnected";
 }
 
-type WebSocketMessage = ChatMessage | MatchedMessage | DisconnectedMessage;
+interface IceCandidateMessage extends BaseMessage {
+  type: "ice-candidate";
+  data: RTCIceCandidateInit;
+}
+
+interface SDPMessage extends BaseMessage {
+  type: "sdp-offer";
+  data: RTCSessionDescriptionInit;
+}
+
+interface SDPAnswerMessage extends BaseMessage {
+  type: "sdp-answer";
+  data: RTCSessionDescriptionInit;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type WebSocketMessage =
+  | ChatMessage
+  | MatchedMessage
+  | DisconnectedMessage
+  | IceCandidateMessage
+  | SDPMessage
+  | SDPAnswerMessage;
