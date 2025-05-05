@@ -64,7 +64,7 @@ export default function Meet() {
         case "matched":
           setMessages([]);
           setTargetID(parsedData.client_id);
-          await startWebRTC(clientIDRef.current < parsedData.client_id;);
+          await startWebRTC(clientIDRef.current < parsedData.client_id);
           break;
 
         case "disconnected":
@@ -146,6 +146,10 @@ export default function Meet() {
       }
     };
 
+    if (!localStreamRef.current) {
+      console.error("Local stream is not initialized");
+      return;
+    }
     localStreamRef.current
       .getTracks()
       .forEach((track) => pc.addTrack(track, localStreamRef.current!));
@@ -165,11 +169,14 @@ export default function Meet() {
     const id = initiateClientId();
     setClientID(id);
 
+    // @ts-ignore
     startCamera(localVideoRef, localStreamRef).catch((error) => {
       console.error("Error starting camera:", error);
     });
 
-    const ws = new WebSocket(process.env.NEXT_PUBLIC_WEBSOCKET_URL);
+    const ws = new WebSocket(
+      process.env.NEXT_PUBLIC_WEBSOCKET_URL || "ws://localhost:8080",
+    );
     setSocket(ws);
 
     ws.onopen = () => {
