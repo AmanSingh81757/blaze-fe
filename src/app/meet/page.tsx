@@ -92,7 +92,7 @@ export default function Meet() {
       console.error("Error starting camera:", error);
     });
 
-    const ws = new WebSocket("ws://localhost:8080/ws");
+    const ws = new WebSocket(process.env.NEXT_PUBLIC_WEBSOCKET_URL);
     setSocket(ws);
 
     ws.onopen = () => {
