@@ -3,7 +3,11 @@ export function initiateClientId(): string {
   if (typeof window !== "undefined") {
     let clientId = localStorage.getItem("clientId");
     if (!clientId) {
-      clientId = crypto.randomUUID();
+      try {
+        clientId = crypto.randomUUID();
+      } catch {
+        clientId = `client-${Date.now()}`;
+      }
       localStorage.setItem("clientId", clientId);
     }
     return clientId;
