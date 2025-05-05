@@ -1,7 +1,7 @@
 "use client";
 import { ChatWindow } from "@/components/ChatWindow";
 import { VideoCallPanel } from "@/components/VideoCallPanel";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { initiateClientId } from "@/utils/client";
 import { ConnectionDetails } from "@/components/ConnectionDetails";
 
@@ -11,8 +11,11 @@ export default function Meet() {
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [messages, setMessages] = useState<string[]>([]);
   const [message, setMessage] = useState<string>("");
+  const localStreamRef = useRef<MediaStream | null>(null);
+  const localVideoRef = useRef<HTMLVideoElement>(null);
+  const remoteVideoRef = useRef<HTMLVideoElement>(null);
 
-  const handleReceiveMessage = (event: MessageEvent) => {
+  const handleReceiveMessage = async (event: MessageEvent) => {
     try {
       const parsedData = JSON.parse(event.data) as WebSocketMessage;
       console.log("Received JSON Parsed as:", parsedData);
@@ -25,10 +28,12 @@ export default function Meet() {
           setMessages([]);
           setTargetID(parsedData.client_id);
           break;
+
         case "disconnected":
           setMessages([]);
           setTargetID("");
           break;
+
         default:
           console.warn("Unknown message type:", parsedData);
       }
@@ -63,9 +68,29 @@ export default function Meet() {
     socket.send(JSON.stringify(msg));
   };
 
+  async function startCamera(
+    localVideoRef: React.RefObject<HTMLVideoElement>,
+    localStreamRef: React.RefObject<MediaStream | null>,
+  ) {
+    const localStream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true,
+    });
+    localStreamRef.current = localStream;
+
+    if (localVideoRef.current) {
+      localVideoRef.current.srcObject = localStream;
+      console.log("Local video stream set successfully.");
+    }
+  }
+
   useEffect(() => {
     const id = initiateClientId();
     setClientID(id);
+
+    startCamera(localVideoRef, localStreamRef).catch((error) => {
+      console.error("Error starting camera:", error);
+    });
 
     const ws = new WebSocket("ws://localhost:8080/ws");
     setSocket(ws);
@@ -97,7 +122,12 @@ export default function Meet() {
     <section className="h-screen w-screen flex flex-col px-6">
       <ConnectionDetails clientID={clientID} targetID={targetID} />
       <div className="grid grid-cols-7 justify-between items-start w-full flex-grow bg-blue-100">
-        <VideoCallPanel className="col-span-5" socket={socket} />
+        <VideoCallPanel
+          className="col-span-5"
+          socket={socket}
+          localVideoRef={localVideoRef}
+          remoteVideoRef={remoteVideoRef}
+        />
         <ChatWindow
           className="col-span-2"
           message={message}
