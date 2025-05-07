@@ -12,15 +12,19 @@ export function VideoCallPanel({
   className?: string;
 }) {
   const handleJoin = () => {
-    if (socket) {
-      socket.send(JSON.stringify({ type: "join" }));
+    if (!socket) {
+      console.error("Error: Socket is not initialized. Socket: ", socket);
+      return;
     }
+    socket.send(JSON.stringify({ type: "join" }));
   };
 
   const handleShuffle = () => {
-    if (socket) {
-      socket.send(JSON.stringify({ type: "rematch" }));
+    if (!socket) {
+      console.error("Error: Socket is not initialized. Socket: ", socket);
+      return;
     }
+    socket.send(JSON.stringify({ type: "rematch" }));
   };
 
   return (
