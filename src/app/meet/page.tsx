@@ -114,7 +114,7 @@ export default function Meet() {
       console.error("WebSocket is not open");
       return;
     }
-    console.log("Sending message:", JSON.stringify(msg));
+    console.log("Sending messageType:", JSON.stringify(msg.type));
     socketRef.current.send(JSON.stringify(msg));
   };
 
