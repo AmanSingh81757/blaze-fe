@@ -71,6 +71,17 @@ export default function Meet() {
         case "disconnected":
           setMessages([]);
           setTargetID("");
+
+          // Close WebRTC connection
+          if (pcRef.current) {
+            pcRef.current.close();
+            pcRef.current = null;
+            console.log("RTCPeerConnection closed.");
+          }
+
+          if (remoteVideoRef.current) {
+            remoteVideoRef.current.srcObject = null;
+          }
           break;
 
         default:
