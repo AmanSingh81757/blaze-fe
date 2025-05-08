@@ -43,6 +43,10 @@ jobs:
           fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
+      - name: Set up environment variables
+        run : |
+          echo "${{ secrets.ENV }}" > .env
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
