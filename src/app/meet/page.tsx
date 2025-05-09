@@ -88,7 +88,7 @@ export default function Meet() {
           console.warn("Unknown message type:", parsedData);
       }
     } catch (error) {
-      console.error("Error parsing JSON:", error);
+      console.error("Error parsing JSON:", event.data, "error: ", error);
     }
   };
 
@@ -155,7 +155,6 @@ export default function Meet() {
           data: e.candidate,
         };
         sendMessage(msg);
-        console.log("ICE candidate sent:", e.candidate);
       }
     };
 

@@ -29,10 +29,10 @@ export function VideoCallPanel({
 
   return (
     <section className={`flex flex-col h-full w-full p-2 gap-2 ${className}`}>
-      <div className="relative flex-1 bg-gray-400 flex items-center justify-center min-h-450px rounded-2xl">
+      <div className="relative flex-1 bg-gray-400 min-h-450px rounded-2xl overflow-hidden">
         <video
           ref={remoteVideoRef}
-          className="w-full h-full object-cover border-2 border-white rounded-lg"
+          className="absolute inset-0 w-full h-full object-cover border-2 border-white rounded-lg"
           autoPlay
         />
         <video
