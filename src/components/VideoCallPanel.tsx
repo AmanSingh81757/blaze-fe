@@ -42,9 +42,7 @@ export function VideoCallPanel({
     localStreamRef.current.getVideoTracks().forEach((track) => {
       track.enabled = !isCameraOn;
     });
-    if (!isCameraOn) {
-      await startCamera(localVideoRef, localStreamRef);
-    }
+
     setIsCameraOn((prev) => !prev);
   };
 
