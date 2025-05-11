@@ -13,7 +13,6 @@ export function VideoCallPanel({
   localStreamRef,
   remoteVideoRef,
   startCamera,
-  pcRef,
   className,
 }: {
   socket: WebSocket | null;
@@ -24,7 +23,6 @@ export function VideoCallPanel({
     localVideoRef: React.RefObject<HTMLVideoElement>,
     localStreamRef: React.RefObject<MediaStream | null>,
   ) => Promise<void>;
-  pcRef: React.RefObject<RTCPeerConnection | null>;
   className?: string;
 }) {
   const [isMicOn, setIsMicOn] = useState(true);
