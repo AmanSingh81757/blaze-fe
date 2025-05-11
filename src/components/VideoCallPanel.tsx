@@ -24,8 +24,16 @@ export function VideoCallPanel({
   const [isCameraOn, setIsCameraOn] = useState(true);
 
   const handleMicToggle = () => {
+    if (!localStreamRef.current) {
+      console.error("Error: localStreamRef.current is null");
+      return;
+    }
+    // Toggle the enabled state of video tracks
+    localStreamRef.current.getAudioTracks().forEach((track) => {
+      track.enabled = !isMicOn;
+    });
+
     setIsMicOn((prev) => !prev);
-    console.log("Mic toggled:", !isMicOn);
   };
 
   const handleCameraToggle = async () => {

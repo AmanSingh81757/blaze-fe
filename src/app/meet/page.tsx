@@ -165,6 +165,7 @@ export default function Meet() {
       }
 
       const [videoTrack] = e.streams[0].getVideoTracks();
+      const [audioTrack] = e.streams[0].getAudioTracks();
 
       if (videoTrack) {
         console.log("Remote video track received:", videoTrack);
@@ -200,6 +201,23 @@ export default function Meet() {
         remoteVideoRef.current.srcObject = e.streams[0];
       } else {
         console.warn("No video track found in the stream.");
+      }
+
+      // Handle audio track
+      if (audioTrack) {
+        console.log("Remote audio track received:", audioTrack);
+
+        audioTrack.onmute = () => {
+          // Remote audio track muted
+          // TODO: Handle Ui changes for audio mute
+        };
+
+        audioTrack.onunmute = () => {
+          // Remote audio track unmuted
+          // TODO: Handle Ui changes for audio unmute
+        };
+      } else {
+        console.warn("No audio track found in the stream.");
       }
     };
 
