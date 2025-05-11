@@ -288,9 +288,15 @@ export default function Meet() {
   }, [socket]);
 
   return (
-    <section className="h-screen w-screen flex flex-col px-6">
+    <section
+      className="h-screen w-screen flex flex-col px-6"
+      style={{
+        background:
+          "linear-gradient(180deg, #dcebff, #ebdcfb, #fbe5f0, #f7faff)",
+      }}
+    >
       <ConnectionDetails clientID={clientID} targetID={targetID} />
-      <div className="flex-grow bg-blue-100">
+      <div className="flex-grow bg-transparent">
         <div className="grid grid-cols-1 md:grid-cols-7 gap-4 h-full">
           {/* Video Call Panel */}
           <div className="col-span-1 md:col-span-5">

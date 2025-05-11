@@ -33,7 +33,13 @@ export function ChatWindow({
 
   return (
     <section className={`flex flex-col h-full w-full p-2 gap-2 ${className}`}>
-      <div className="flex-1 overflow-y-auto border shadow-md p-4 min-h-450px bg-gray-300 rounded-2xl">
+      <div
+        className="flex-1 overflow-y-auto border shadow-md p-4 min-h-450px bg-gray-300 rounded-2xl"
+        style={{
+          background:
+            "linear-gradient(90deg, #dcebff, #ebdcfb, #fbe5f0, #f7faff)",
+        }}
+      >
         {messages.map((message, index) => (
           <div key={index} className="mb-2">
             <p className="text-gray-800">{message}</p>
