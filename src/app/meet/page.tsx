@@ -226,8 +226,6 @@ export default function Meet() {
     const id = initiateClientId();
     setClientID(id);
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
     startCamera(localVideoRef, localStreamRef).catch((error) => {
       console.error("Error starting camera:", error);
     });
@@ -282,7 +280,6 @@ export default function Meet() {
           localStreamRef={localStreamRef}
           remoteVideoRef={remoteVideoRef}
           startCamera={startCamera}
-          pcRef={pcRef}
         />
         <ChatWindow
           className="col-span-2"

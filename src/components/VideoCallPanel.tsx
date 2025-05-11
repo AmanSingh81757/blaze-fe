@@ -20,7 +20,7 @@ export function VideoCallPanel({
   localStreamRef: React.RefObject<MediaStream | null>;
   remoteVideoRef: React.RefObject<HTMLVideoElement | null>;
   startCamera: (
-    localVideoRef: React.RefObject<HTMLVideoElement>,
+    localVideoRef: React.RefObject<HTMLVideoElement | null>,
     localStreamRef: React.RefObject<MediaStream | null>,
   ) => Promise<void>;
   className?: string;
