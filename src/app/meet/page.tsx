@@ -179,11 +179,19 @@ export default function Meet() {
 
         // Attach event listeners to handle track state changes
         videoTrack.onmute = () => {
+          if (!remoteVideoRef.current) {
+            console.error("Remote video ref is not initialized");
+            return;
+          }
           console.log("Remote video track muted");
           remoteVideoRef.current.srcObject = null; // Hide video when muted
         };
 
         videoTrack.onunmute = () => {
+          if (!remoteVideoRef.current) {
+            console.error("Remote video ref is not initialized");
+            return;
+          }
           console.log("Remote video track unmuted");
           remoteVideoRef.current.srcObject = e.streams[0]; // Show video when unmuted
         };
