@@ -10,12 +10,19 @@ import {
 export function VideoCallPanel({
   socket,
   localVideoRef,
+  localStreamRef,
   remoteVideoRef,
+  startCamera,
   className,
 }: {
   socket: WebSocket | null;
   localVideoRef: React.RefObject<HTMLVideoElement | null>;
+  localStreamRef: React.RefObject<MediaStream | null>;
   remoteVideoRef: React.RefObject<HTMLVideoElement | null>;
+  startCamera: (
+    localVideoRef: React.RefObject<HTMLVideoElement>,
+    localStreamRef: React.RefObject<MediaStream | null>,
+  ) => Promise<void>;
   className?: string;
 }) {
   const [isMicOn, setIsMicOn] = useState(true);
@@ -26,7 +33,22 @@ export function VideoCallPanel({
     console.log("Mic toggled:", !isMicOn);
   };
 
-  const handleCameraToggle = () => {
+  const handleCameraToggle = async () => {
+    if (isCameraOn) {
+      if (localStreamRef.current) {
+        localStreamRef.current.getVideoTracks().forEach((track) => {
+          track.stop();
+          console.log("Video track stopped.");
+        });
+      }
+    } else {
+      try {
+        await startCamera(localVideoRef, localStreamRef);
+        console.log("Camera started.");
+      } catch (error) {
+        console.error("Error starting camera:", error);
+      }
+    }
     setIsCameraOn((prev) => !prev);
     console.log("Camera toggled:", !isCameraOn);
   };
