@@ -119,7 +119,7 @@ export default function Meet() {
   };
 
   async function startCamera(
-    localVideoRef: React.RefObject<HTMLVideoElement>,
+    localVideoRef: React.RefObject<HTMLVideoElement | null>,
     localStreamRef: React.RefObject<MediaStream | null>,
   ) {
     const localStream = await navigator.mediaDevices.getUserMedia({
@@ -159,8 +159,39 @@ export default function Meet() {
     };
 
     pc.ontrack = (e) => {
-      if (remoteVideoRef.current) {
+      if (!remoteVideoRef.current) {
+        console.error("Remote video ref is not initialized");
+        return;
+      }
+
+      const [videoTrack] = e.streams[0].getVideoTracks();
+
+      if (videoTrack) {
+        console.log("Remote video track received:", videoTrack);
+
+        // Handle the initial state of the video track
+        if (!videoTrack.enabled) {
+          console.log("Remote video track is initially muted");
+          remoteVideoRef.current.srcObject = null; // Hide video if initially muted
+        } else {
+          remoteVideoRef.current.srcObject = e.streams[0]; // Show video if enabled
+        }
+
+        // Attach event listeners to handle track state changes
+        videoTrack.onmute = () => {
+          console.log("Remote video track muted");
+          remoteVideoRef.current.srcObject = null; // Hide video when muted
+        };
+
+        videoTrack.onunmute = () => {
+          console.log("Remote video track unmuted");
+          remoteVideoRef.current.srcObject = e.streams[0]; // Show video when unmuted
+        };
+
+        // Set the video stream initially
         remoteVideoRef.current.srcObject = e.streams[0];
+      } else {
+        console.warn("No video track found in the stream.");
       }
     };
 

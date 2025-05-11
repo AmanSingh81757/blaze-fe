@@ -36,46 +36,18 @@ export function VideoCallPanel({
   };
 
   const handleCameraToggle = async () => {
-    if (isCameraOn) {
-      if (localStreamRef.current) {
-        localStreamRef.current.getVideoTracks().forEach((track) => {
-          track.stop();
-          console.log("Video track stopped.");
-        });
-      }
-      resetRemoteVideo();
-    } else {
-      try {
-        await startCamera(localVideoRef, localStreamRef);
-
-        // Reconnect remote video if needed
-        if (remoteVideoRef.current && pcRef.current) {
-          const remoteStreams = pcRef.current
-            .getReceivers()
-            .map(
-              (receiver) => receiver.track?.kind === "video" && receiver.track,
-            );
-          if (remoteStreams.length > 0) {
-            remoteVideoRef.current.srcObject = new MediaStream(
-              remoteStreams.filter(Boolean),
-            );
-            console.log("Remote video reconnected.");
-          }
-        }
-        console.log("Camera started.");
-      } catch (error) {
-        console.error("Error starting camera:", error);
-      }
+    if (!localStreamRef.current) {
+      console.error("Error: localStreamRef.current is null");
+      return;
+    }
+    // Toggle the enabled state of video tracks
+    localStreamRef.current.getVideoTracks().forEach((track) => {
+      track.enabled = !isCameraOn;
+    });
+    if (!isCameraOn) {
+      await startCamera(localVideoRef, localStreamRef);
     }
     setIsCameraOn((prev) => !prev);
-    console.log("Camera toggled:", !isCameraOn);
-  };
-
-  const resetRemoteVideo = () => {
-    if (remoteVideoRef.current) {
-      remoteVideoRef.current.srcObject = null; // Clear the video stream
-      console.log("Remote video reset to default screen.");
-    }
   };
 
   const handleEndChat = () => {
