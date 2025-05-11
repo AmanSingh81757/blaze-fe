@@ -296,7 +296,6 @@ export default function Meet() {
           <div className="col-span-1 md:col-span-5">
             <VideoCallPanel
               className="w-full"
-              socket={socket}
               localVideoRef={localVideoRef}
               localStreamRef={localStreamRef}
               remoteVideoRef={remoteVideoRef}
@@ -310,6 +309,7 @@ export default function Meet() {
               messages={messages}
               setMessage={setMessage}
               handleSendMessage={handleSendMessage}
+              socket={socket}
             />
           </div>
         </div>

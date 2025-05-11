@@ -8,13 +8,11 @@ import {
 } from "react-icons/fa";
 
 export function VideoCallPanel({
-  socket,
   localVideoRef,
   localStreamRef,
   remoteVideoRef,
   className,
 }: {
-  socket: WebSocket | null;
   localVideoRef: React.RefObject<HTMLVideoElement | null>;
   localStreamRef: React.RefObject<MediaStream | null>;
   remoteVideoRef: React.RefObject<HTMLVideoElement | null>;
@@ -51,22 +49,6 @@ export function VideoCallPanel({
 
   const handleEndChat = () => {
     console.log("End chat button pressed");
-  };
-
-  const handleJoin = () => {
-    if (!socket) {
-      console.error("Error: Socket is not initialized. Socket: ", socket);
-      return;
-    }
-    socket.send(JSON.stringify({ type: "join" }));
-  };
-
-  const handleShuffle = () => {
-    if (!socket) {
-      console.error("Error: Socket is not initialized. Socket: ", socket);
-      return;
-    }
-    socket.send(JSON.stringify({ type: "rematch" }));
   };
 
   return (
@@ -132,20 +114,6 @@ export function VideoCallPanel({
             <FaPhoneSlash size={20} />
           </button>
         </div>
-      </div>
-      <div className="flex justify-between">
-        <button
-          className="bg-blue-500 text-white font-bold py-2 px-4 rounded cursor-pointer"
-          onClick={handleJoin}
-        >
-          Join
-        </button>
-        <button
-          className="bg-blue-500 text-white font-bold py-2 px-4 rounded cursor-pointer"
-          onClick={handleShuffle}
-        >
-          Shuffle
-        </button>
       </div>
     </section>
   );
