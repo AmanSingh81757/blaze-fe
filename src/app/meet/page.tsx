@@ -290,21 +290,29 @@ export default function Meet() {
   return (
     <section className="h-screen w-screen flex flex-col px-6">
       <ConnectionDetails clientID={clientID} targetID={targetID} />
-      <div className="grid grid-cols-7 justify-between items-start w-full flex-grow bg-blue-100">
-        <VideoCallPanel
-          className="col-span-5"
-          socket={socket}
-          localVideoRef={localVideoRef}
-          localStreamRef={localStreamRef}
-          remoteVideoRef={remoteVideoRef}
-        />
-        <ChatWindow
-          className="col-span-2"
-          message={message}
-          messages={messages}
-          setMessage={setMessage}
-          handleSendMessage={handleSendMessage}
-        />
+      <div className="flex-grow bg-blue-100">
+        <div className="grid grid-cols-1 md:grid-cols-7 gap-4 h-full">
+          {/* Video Call Panel */}
+          <div className="col-span-1 md:col-span-5">
+            <VideoCallPanel
+              className="w-full"
+              socket={socket}
+              localVideoRef={localVideoRef}
+              localStreamRef={localStreamRef}
+              remoteVideoRef={remoteVideoRef}
+            />
+          </div>
+          {/* Chat Window */}
+          <div className="col-span-1 md:col-span-2">
+            <ChatWindow
+              className="w-full h-1/3 md:h-full"
+              message={message}
+              messages={messages}
+              setMessage={setMessage}
+              handleSendMessage={handleSendMessage}
+            />
+          </div>
+        </div>
       </div>
     </section>
   );
