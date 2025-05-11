@@ -13,6 +13,7 @@ export function VideoCallPanel({
   localStreamRef,
   remoteVideoRef,
   startCamera,
+  pcRef,
   className,
 }: {
   socket: WebSocket | null;
@@ -23,6 +24,7 @@ export function VideoCallPanel({
     localVideoRef: React.RefObject<HTMLVideoElement>,
     localStreamRef: React.RefObject<MediaStream | null>,
   ) => Promise<void>;
+  pcRef: React.RefObject<RTCPeerConnection | null>;
   className?: string;
 }) {
   const [isMicOn, setIsMicOn] = useState(true);
@@ -41,9 +43,25 @@ export function VideoCallPanel({
           console.log("Video track stopped.");
         });
       }
+      resetRemoteVideo();
     } else {
       try {
         await startCamera(localVideoRef, localStreamRef);
+
+        // Reconnect remote video if needed
+        if (remoteVideoRef.current && pcRef.current) {
+          const remoteStreams = pcRef.current
+            .getReceivers()
+            .map(
+              (receiver) => receiver.track?.kind === "video" && receiver.track,
+            );
+          if (remoteStreams.length > 0) {
+            remoteVideoRef.current.srcObject = new MediaStream(
+              remoteStreams.filter(Boolean),
+            );
+            console.log("Remote video reconnected.");
+          }
+        }
         console.log("Camera started.");
       } catch (error) {
         console.error("Error starting camera:", error);
@@ -51,6 +69,13 @@ export function VideoCallPanel({
     }
     setIsCameraOn((prev) => !prev);
     console.log("Camera toggled:", !isCameraOn);
+  };
+
+  const resetRemoteVideo = () => {
+    if (remoteVideoRef.current) {
+      remoteVideoRef.current.srcObject = null; // Clear the video stream
+      console.log("Remote video reset to default screen.");
+    }
   };
 
   const handleEndChat = () => {

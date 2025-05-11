@@ -243,6 +243,7 @@ export default function Meet() {
           localStreamRef={localStreamRef}
           remoteVideoRef={remoteVideoRef}
           startCamera={startCamera}
+          pcRef={pcRef}
         />
         <ChatWindow
           className="col-span-2"
