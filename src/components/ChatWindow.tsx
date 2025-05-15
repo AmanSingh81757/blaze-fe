@@ -8,7 +8,7 @@ export function ChatWindow({
   socket,
   className,
 }: {
-  messages: string[];
+  messages: ChatMessage[];
   message: string;
   setMessage: (msg: string) => void;
   handleSendMessage: () => void;
@@ -41,8 +41,21 @@ export function ChatWindow({
         }}
       >
         {messages.map((message, index) => (
-          <div key={index} className="mb-2">
-            <p className="text-gray-800">{message}</p>
+          <div
+            key={index}
+            className={`mb-2 flex ${
+              message.isSelf ? "justify-end" : "justify-start"
+            }`}
+          >
+            <p
+              className={`p-2 rounded-lg max-w-xs ${
+                message.isSelf
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200 text-gray-800"
+              }`}
+            >
+              {message.message}
+            </p>
           </div>
         ))}
       </div>

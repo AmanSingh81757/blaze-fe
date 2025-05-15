@@ -11,6 +11,7 @@ interface BaseMessage {
 interface ChatMessage extends BaseMessage {
   type: "message";
   message: string;
+  isSelf: boolean;
 }
 
 interface MatchedMessage extends BaseMessage {

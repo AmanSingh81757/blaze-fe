@@ -9,7 +9,7 @@ export default function Meet() {
   const [clientID, setClientID] = useState("");
   const [targetID, setTargetID] = useState("");
   const [socket, setSocket] = useState<WebSocket | null>(null);
-  const [messages, setMessages] = useState<string[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [message, setMessage] = useState<string>("");
   const clientIDRef = useRef("");
   const socketRef = useRef<WebSocket | null>(null);
@@ -25,7 +25,12 @@ export default function Meet() {
 
       switch (parsedData.type) {
         case "message":
-          setMessages((prevMessages) => [...prevMessages, parsedData.message]);
+          const msg: ChatMessage = {
+            type: "message",
+            message: parsedData.message,
+            isSelf: false,
+          };
+          setMessages((prevMessages) => [...prevMessages, msg]);
           break;
 
         case "sdp-offer":
@@ -97,11 +102,13 @@ export default function Meet() {
       console.error("Message is empty");
       return;
     }
-    const msg: WebSocketMessage = {
+    const msg: ChatMessage = {
       type: "message",
       message: message,
+      isSelf: true,
     };
     sendMessage(msg);
+    setMessages((prevMessages) => [...prevMessages, msg]);
     setMessage("");
   };
 
