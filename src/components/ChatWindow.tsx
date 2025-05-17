@@ -1,4 +1,6 @@
 import React from "react";
+import { useRef, useEffect } from "react";
+import { Send } from "lucide-react"
 
 export function ChatWindow({
   messages,
@@ -15,77 +17,67 @@ export function ChatWindow({
   socket: WebSocket | null;
   className?: string;
 }) {
-  const handleJoin = () => {
-    if (!socket) {
-      console.error("Error: Socket is not initialized. Socket: ", socket);
-      return;
-    }
-    socket.send(JSON.stringify({ type: "join" }));
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleShuffle = () => {
-    if (!socket) {
-      console.error("Error: Socket is not initialized. Socket: ", socket);
-      return;
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault()
+      handleSendMessage()
     }
-    socket.send(JSON.stringify({ type: "rematch" }));
-  };
+  }
 
   return (
-    <section className={`flex flex-col h-full w-full p-2 gap-2 ${className}`}>
-      <div
-        className="flex-1 overflow-y-auto border shadow-md p-4 min-h-450px bg-gray-300 rounded-2xl"
-        style={{
-          background:
-            "linear-gradient(90deg, #dcebff, #ebdcfb, #fbe5f0, #f7faff)",
-        }}
-      >
-        {messages.map((message, index) => (
-          <div
-            key={index}
-            className={`mb-2 flex ${
-              message.isSelf ? "justify-end" : "justify-start"
-            }`}
-          >
-            <p
-              className={`p-2 rounded-lg max-w-xs ${
-                message.isSelf
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-200 text-gray-800"
+    <section
+      className={`bg-white rounded-lg shadow flex flex-col h-full gap-2 ${className}`}
+    >
+      <div className="p-3 border-b border-gray-300">
+        <h2 className="font-semibold">Chat</h2>
+      </div>
+      <div className="flex-1 p-4 overflow-y-auto">
+        <div className="flex flex-col space-y-3">
+          {messages.map((message, index) => (
+            <div
+              key={index}
+              className={`mb-2 flex ${
+                message.isSelf ? "justify-end" : "justify-start"
               }`}
             >
-              {message.message}
-            </p>
-          </div>
-        ))}
+              <p
+                className={`max-w-[80%] px-4 py-2 rounded-lg ${
+                  message.isSelf
+                    ? "bg-blue-500 text-white rounded-br-none"
+                    : "bg-gray-200 text-gray-800 rounded-bl-none"
+                }`}
+              >
+                {message.message}
+              </p>
+            </div>
+          ))}
+          <div ref={messagesEndRef} />
+        </div>
       </div>
-      <div className="flex justify-between gap-2">
+      <div className="flex justify-between gap-2 border-t border-gray-300 p-2">
         <input
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={handleKeyDown}
           type="text"
           placeholder="Type a message..."
           className="border rounded p-2 w-full"
         />
         <button
-          className="bg-blue-500 text-white font-bold py-2 px-4 rounded"
+          className="bg-blue-500 text-white font-bold py-2 px-4 rounded-full"
           onClick={handleSendMessage}
+          disabled={message.trim() === "" || socket?.readyState !== WebSocket.OPEN}
         >
-          Send
-        </button>
-      </div>
-      <div className="flex justify-between">
-        <button
-          className="bg-blue-500 text-white font-bold py-2 px-4 rounded cursor-pointer"
-          onClick={handleJoin}
-        >
-          Join
-        </button>
-        <button
-          className="bg-blue-500 text-white font-bold py-2 px-4 rounded cursor-pointer"
-          onClick={handleShuffle}
-        >
-          Shuffle
+          <Send className="h-4 w-4" />
         </button>
       </div>
     </section>

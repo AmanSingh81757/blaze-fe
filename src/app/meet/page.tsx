@@ -295,38 +295,33 @@ export default function Meet() {
   }, [socket]);
 
   return (
-    <section
-      className="h-screen w-screen flex flex-col px-6"
+    <main
+      className="h-screen w-screen flex flex-col"
       style={{
         background:
           "linear-gradient(180deg, #dcebff, #ebdcfb, #fbe5f0, #f7faff)",
       }}
     >
       <ConnectionDetails clientID={clientID} targetID={targetID} />
-      <div className="flex-grow bg-transparent">
-        <div className="grid grid-cols-1 md:grid-cols-7 gap-4 h-full">
-          {/* Video Call Panel */}
-          <div className="col-span-1 md:col-span-5">
-            <VideoCallPanel
-              className="w-full"
-              localVideoRef={localVideoRef}
-              localStreamRef={localStreamRef}
-              remoteVideoRef={remoteVideoRef}
-            />
-          </div>
-          {/* Chat Window */}
-          <div className="col-span-1 md:col-span-2">
-            <ChatWindow
-              className="w-full h-1/3 md:h-full"
-              message={message}
-              messages={messages}
-              setMessage={setMessage}
-              handleSendMessage={handleSendMessage}
-              socket={socket}
-            />
-          </div>
-        </div>
-      </div>
-    </section>
+      <section className="grid grid-cols-1 lg:grid-cols-12 md:grid-cols-10 gap-4 h-full p-4 flex-grow bg-transparent">
+        {/* Video Call Panel */}
+        <VideoCallPanel
+          className="w-full col-span-1 lg:col-span-9 md:col-span-7"
+          localVideoRef={localVideoRef}
+          localStreamRef={localStreamRef}
+          remoteVideoRef={remoteVideoRef}
+          socket={socket}
+        />
+        {/* Chat Window */}
+        <ChatWindow
+          className="w-full h-1/3 lg:h-full col-span-1 md:col-span-3 hidden md:flex"
+          message={message}
+          messages={messages}
+          setMessage={setMessage}
+          handleSendMessage={handleSendMessage}
+          socket={socket}
+        />
+      </section>
+    </main>
   );
 }
