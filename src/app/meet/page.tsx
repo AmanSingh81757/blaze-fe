@@ -4,6 +4,7 @@ import { VideoCallPanel } from "@/components/VideoCallPanel";
 import { useState, useEffect, useRef } from "react";
 import { initiateClientId } from "@/utils/client";
 import { ConnectionDetails } from "@/components/ConnectionDetails";
+import { ChatDrawer } from "@/components/ChatDrawer";
 
 export default function Meet() {
   const [clientID, setClientID] = useState("");
@@ -296,7 +297,7 @@ export default function Meet() {
 
   return (
     <main
-      className="h-screen w-screen flex flex-col"
+      className="h-full w-full flex flex-col"
       style={{
         background:
           "linear-gradient(180deg, #dcebff, #ebdcfb, #fbe5f0, #f7faff)",
@@ -311,10 +312,11 @@ export default function Meet() {
           localStreamRef={localStreamRef}
           remoteVideoRef={remoteVideoRef}
           socket={socket}
+          ChatDrawerComponent={<ChatDrawer message={message} messages={messages} setMessage={setMessage} handleSendMessage={handleSendMessage} socket={socket} />}
         />
         {/* Chat Window */}
         <ChatWindow
-          className="w-full h-1/3 lg:h-full col-span-1 md:col-span-3 hidden md:flex"
+          className="w-full col-span-1 md:col-span-3 hidden md:flex"
           message={message}
           messages={messages}
           setMessage={setMessage}

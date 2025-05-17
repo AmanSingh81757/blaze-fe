@@ -13,12 +13,14 @@ export function VideoCallPanel({
   remoteVideoRef,
   className,
   socket,
+  ChatDrawerComponent,
 }: {
   localVideoRef: React.RefObject<HTMLVideoElement | null>;
   localStreamRef: React.RefObject<MediaStream | null>;
   remoteVideoRef: React.RefObject<HTMLVideoElement | null>;
   className?: string;
   socket: WebSocket | null;
+  ChatDrawerComponent: React.ReactNode;
 }) {
   const [isMicOn, setIsMicOn] = useState(true);
   const [isCameraOn, setIsCameraOn] = useState(true);
@@ -86,6 +88,7 @@ export function VideoCallPanel({
       />
       {/* Mic and Camera Status */}
       <div className="absolute bottom-4 left-4 flex gap-4">
+        {ChatDrawerComponent}
         {/* Mic Toggle Button */}
         <button
           className="w-12 h-12 flex items-center justify-center rounded-full bg-[#38b6ff] text-white"
