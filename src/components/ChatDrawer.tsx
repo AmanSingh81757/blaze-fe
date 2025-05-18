@@ -80,9 +80,9 @@ export function ChatDrawer({
 
         <div className="flex-1 p-4 overflow-y-auto h-[calc(85vh-180px)] sm:h-[calc(70vh-180px)]">
           <div className="flex flex-col space-y-3">
-            {messages.map((message) => (
+            {messages.map((message, index) => (
               <div
-                // key={message.id}
+                key={index}
                 className={`flex ${message.isSelf ? "justify-end" : "justify-start"}`}
               >
                 <div
