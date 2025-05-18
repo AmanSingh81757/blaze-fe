@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import {
   FaMicrophone,
@@ -73,21 +75,27 @@ export function VideoCallPanel({
 
   return (
     <section
-      className={`flex flex-col h-full w-full gap-2 ${className} relative flex-1 bg-gray-400 min-h-450px rounded-lg overflow-hidden`}
+      className={`relative h-full w-full bg-gray-400 rounded-lg overflow-hidden ${className}`}
     >
-      <video
-        ref={remoteVideoRef}
-        className="absolute inset-0 w-full h-full object-cover border-2 border-white rounded-lg"
-        autoPlay
-      />
-      <video
-        ref={localVideoRef}
-        className="absolute bottom-4 right-4 w-32 h-32 object-cover border-2 border-white rounded-lg"
-        autoPlay
-        muted
-      />
+      <div className="h-full w-full">
+        <video
+          ref={remoteVideoRef}
+          className="h-full w-full object-cover"
+          autoPlay
+          playsInline
+        />
+      </div>
+      <div className="absolute bottom-4 right-4 w-[180px] h-[120px] rounded-lg overflow-hidden border-2 border-white shadow-lg">
+        <video
+          ref={localVideoRef}
+          className="h-full w-full object-cover"
+          autoPlay
+          playsInline
+          muted
+        />
+      </div>
       {/* Mic and Camera Status */}
-      <div className="absolute bottom-4 left-4 flex gap-4">
+      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex items-center space-x-4">
         {ChatDrawerComponent}
         {/* Mic Toggle Button */}
         <button
