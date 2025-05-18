@@ -74,8 +74,8 @@ export function VideoCallPanel({
   };
 
   return (
-    <section
-      className={`relative h-full w-full bg-gray-400 rounded-lg overflow-hidden ${className}`}
+    <div
+      className={`relative w-full bg-gray-400 rounded-lg overflow-hidden ${className} h-[calc(100vh-120px)]`}
     >
       <div className="h-full w-full">
         <video
@@ -156,6 +156,6 @@ export function VideoCallPanel({
           Shuffle
         </button>
       </div>
-    </section>
+    </div>
   );
 }
