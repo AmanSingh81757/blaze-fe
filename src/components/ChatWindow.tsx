@@ -45,7 +45,6 @@ export function ChatWindow({
           {messages.map((message, index) => (
             <div
               key={index}
-              ref={message.isSelf ? null : messagesEndRef}
               className={`flex ${message.isSelf ? "justify-end" : "justify-start"}`}
             >
               <div
@@ -59,7 +58,7 @@ export function ChatWindow({
               </div>
             </div>
           ))}
-          {/* <div ref={messagesEndRef} /> */}
+          <div ref={messagesEndRef} />
         </div>
       </div>
       <div className="flex justify-between gap-2 border-t border-gray-300 p-2">
