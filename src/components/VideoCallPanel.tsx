@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import {
   FaMicrophone,
@@ -12,11 +14,15 @@ export function VideoCallPanel({
   localStreamRef,
   remoteVideoRef,
   className,
+  socket,
+  ChatDrawerComponent,
 }: {
   localVideoRef: React.RefObject<HTMLVideoElement | null>;
   localStreamRef: React.RefObject<MediaStream | null>;
   remoteVideoRef: React.RefObject<HTMLVideoElement | null>;
   className?: string;
+  socket: WebSocket | null;
+  ChatDrawerComponent: React.ReactNode;
 }) {
   const [isMicOn, setIsMicOn] = useState(true);
   const [isCameraOn, setIsCameraOn] = useState(true);
@@ -51,69 +57,104 @@ export function VideoCallPanel({
     console.log("End chat button pressed");
   };
 
+  const handleJoin = () => {
+    if (!socket) {
+      console.error("Error: Socket is not initialized. Socket: ", socket);
+      return;
+    }
+    socket.send(JSON.stringify({ type: "join" }));
+  };
+
+  const handleShuffle = () => {
+    if (!socket) {
+      console.error("Error: Socket is not initialized. Socket: ", socket);
+      return;
+    }
+    socket.send(JSON.stringify({ type: "rematch" }));
+  };
+
   return (
-    <section className={`flex flex-col h-full w-full p-2 gap-2 ${className}`}>
-      <div className="relative flex-1 bg-gray-400 min-h-450px rounded-2xl overflow-hidden">
+    <section
+      className={`relative h-full w-full bg-gray-400 rounded-lg overflow-hidden ${className}`}
+    >
+      <div className="h-full w-full">
         <video
           ref={remoteVideoRef}
-          className="absolute inset-0 w-full h-full object-cover border-2 border-white rounded-lg"
+          className="h-full w-full object-cover"
           autoPlay
+          playsInline
         />
+      </div>
+      <div className="absolute bottom-4 right-4 w-[180px] h-[120px] rounded-lg overflow-hidden border-2 border-white shadow-lg">
         <video
           ref={localVideoRef}
-          className="absolute bottom-4 right-4 w-32 h-32 object-cover border-2 border-white rounded-lg"
+          className="h-full w-full object-cover"
           autoPlay
+          playsInline
           muted
         />
-        {/* Mic and Camera Status */}
-        <div className="absolute bottom-4 left-4 flex gap-4">
-          {/* Mic Toggle Button */}
-          <button
-            className="w-12 h-12 flex items-center justify-center rounded-full bg-[#38b6ff] text-white"
-            aria-label="Toggle Mic"
-            onClick={handleMicToggle}
-          >
-            {isMicOn ? (
-              <FaMicrophone
-                size={20}
-                className="transition-transform duration-300 ease-in-out transform scale-100"
-              />
-            ) : (
-              <FaMicrophoneSlash
-                size={20}
-                className="transition-transform duration-300 ease-in-out transform scale-100"
-              />
-            )}
-          </button>
+      </div>
+      {/* Mic and Camera Status */}
+      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex items-center space-x-4">
+        {ChatDrawerComponent}
+        {/* Mic Toggle Button */}
+        <button
+          className="w-12 h-12 flex items-center justify-center rounded-full bg-[#38b6ff] text-white"
+          aria-label="Toggle Mic"
+          onClick={handleMicToggle}
+        >
+          {isMicOn ? (
+            <FaMicrophone
+              size={20}
+              className="transition-transform duration-300 ease-in-out transform scale-100"
+            />
+          ) : (
+            <FaMicrophoneSlash
+              size={20}
+              className="transition-transform duration-300 ease-in-out transform scale-100"
+            />
+          )}
+        </button>
 
-          {/* Camera Toggle Button */}
-          <button
-            className="w-12 h-12 flex items-center justify-center rounded-full bg-[#38b6ff] text-white"
-            aria-label="Toggle Camera"
-            onClick={handleCameraToggle}
-          >
-            {isCameraOn ? (
-              <FaVideo
-                size={20}
-                className="transition-transform duration-300 ease-in-out transform scale-100"
-              />
-            ) : (
-              <FaVideoSlash
-                size={20}
-                className="transition-transform duration-300 ease-in-out transform scale-100"
-              />
-            )}
-          </button>
+        {/* Camera Toggle Button */}
+        <button
+          className="w-12 h-12 flex items-center justify-center rounded-full bg-[#38b6ff] text-white"
+          aria-label="Toggle Camera"
+          onClick={handleCameraToggle}
+        >
+          {isCameraOn ? (
+            <FaVideo
+              size={20}
+              className="transition-transform duration-300 ease-in-out transform scale-100"
+            />
+          ) : (
+            <FaVideoSlash
+              size={20}
+              className="transition-transform duration-300 ease-in-out transform scale-100"
+            />
+          )}
+        </button>
 
-          {/* End Chat Button */}
-          <button
-            className="w-20 h-12 flex items-center justify-center rounded-lg bg-[#ff5757] text-white"
-            aria-label="End Chat"
-            onClick={handleEndChat}
-          >
-            <FaPhoneSlash size={20} />
-          </button>
-        </div>
+        {/* End Chat Button */}
+        <button
+          className="w-20 h-12 flex items-center justify-center rounded-lg bg-[#ff5757] text-white"
+          aria-label="End Chat"
+          onClick={handleEndChat}
+        >
+          <FaPhoneSlash size={20} />
+        </button>
+        <button
+          className="bg-blue-500 text-white font-bold py-2 px-4 rounded cursor-pointer"
+          onClick={handleJoin}
+        >
+          Join
+        </button>
+        <button
+          className="bg-blue-500 text-white font-bold py-2 px-4 rounded cursor-pointer"
+          onClick={handleShuffle}
+        >
+          Shuffle
+        </button>
       </div>
     </section>
   );
