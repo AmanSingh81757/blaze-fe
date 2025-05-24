@@ -16,7 +16,7 @@ export interface ChatMessage extends BaseMessage {
 
 export interface MatchedMessage extends BaseMessage {
   type: "matched";
-  client_id: string;
+  client: UserData;
 }
 
 export interface DisconnectedMessage extends BaseMessage {

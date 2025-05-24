@@ -15,13 +15,12 @@ import {
 } from "@/app/meet/types";
 
 export default function Meet() {
-  const [, setUserData] = useState<UserData | null>(null);
-  const [clientID, setClientID] = useState("");
-  const [targetID, setTargetID] = useState("");
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [peerData, setPeerData] = useState<UserData | null>(null);
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [message, setMessage] = useState<string>("");
-  const clientIDRef = useRef("");
+  const userDataRef = useRef<UserData | null>(null);
   const socketRef = useRef<WebSocket | null>(null);
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
@@ -79,13 +78,14 @@ export default function Meet() {
 
         case "matched":
           setMessages([]);
-          setTargetID(parsedData.client_id);
-          await startWebRTC(clientIDRef.current < parsedData.client_id);
+          setPeerData(parsedData.client);
+          // @ts-expect-error
+          await startWebRTC(userDataRef.current?.uuid < parsedData.client.uuid);
           break;
 
         case "disconnected":
           setMessages([]);
-          setTargetID("");
+          setPeerData(null);
 
           // Close WebRTC connection
           if (pcRef.current) {
@@ -268,7 +268,6 @@ export default function Meet() {
         }
 
         setUserData(userData);
-        setClientID(userData.uuid);
 
         const ws = new WebSocket(
           process.env.NEXT_PUBLIC_WEBSOCKET_URL || "ws://localhost:8080",
@@ -277,7 +276,7 @@ export default function Meet() {
 
         ws.onopen = () => {
           console.log("Connected to WebSocket");
-          ws.send(JSON.stringify({ type: "identity", id: userData.id }));
+          ws.send(JSON.stringify({ type: "identity", client: userData }));
         };
 
         ws.onclose = () => {
@@ -311,8 +310,8 @@ export default function Meet() {
 
   // for clientID
   useEffect(() => {
-    clientIDRef.current = clientID; // Keep the ref in sync with the state
-  }, [clientID]);
+    userDataRef.current = userData; // Keep the ref in sync with the state
+  }, [userData]);
 
   // for socket
   useEffect(() => {
@@ -327,7 +326,7 @@ export default function Meet() {
           "linear-gradient(180deg, #dcebff, #ebdcfb, #fbe5f0, #f7faff)",
       }}
     >
-      <ConnectionDetails clientID={clientID} targetID={targetID} />
+      <ConnectionDetails client={userData} target={peerData} />
       <section className="grid grid-cols-1 lg:grid-cols-12 md:grid-cols-10 gap-4 h-full p-4 flex-grow bg-transparent">
         {/* Video Call Panel */}
         <VideoCallPanel

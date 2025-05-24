@@ -1,6 +1,7 @@
 import React from "react";
 import { useRef, useEffect } from "react";
-import { Send } from "lucide-react"
+import { Send } from "lucide-react";
+import { ChatMessage } from "@/app/meet/types";
 
 export function ChatWindow({
   messages,
@@ -28,10 +29,10 @@ export function ChatWindow({
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      e.preventDefault()
-      handleSendMessage()
+      e.preventDefault();
+      handleSendMessage();
     }
-  }
+  };
 
   return (
     <section

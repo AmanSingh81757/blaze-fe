@@ -13,6 +13,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { MessageSquare, Send, X } from "lucide-react";
+import { ChatMessage } from "@/app/meet/types";
 
 export function ChatDrawer({
   message,
