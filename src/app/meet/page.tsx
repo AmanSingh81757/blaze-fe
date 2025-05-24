@@ -2,11 +2,20 @@
 import { ChatWindow } from "@/components/ChatWindow";
 import { VideoCallPanel } from "@/components/VideoCallPanel";
 import { useState, useEffect, useRef } from "react";
-import { initiateClientId } from "@/utils/client";
+import { verifyExistingUser, createNewUser } from "@/utils/client";
 import { ConnectionDetails } from "@/components/ConnectionDetails";
 import { ChatDrawer } from "@/components/ChatDrawer";
+import {
+  UserData,
+  ChatMessage,
+  WebSocketMessage,
+  IceCandidateMessage,
+  SDPMessage,
+  SDPAnswerMessage,
+} from "@/app/meet/types";
 
 export default function Meet() {
+  const [, setUserData] = useState<UserData | null>(null);
   const [clientID, setClientID] = useState("");
   const [targetID, setTargetID] = useState("");
   const [socket, setSocket] = useState<WebSocket | null>(null);
@@ -249,33 +258,48 @@ export default function Meet() {
   }
 
   useEffect(() => {
-    const id = initiateClientId();
-    setClientID(id);
+    const initializeUser = async () => {
+      try {
+        let userData: UserData | null = await verifyExistingUser();
+
+        if (!userData) {
+          console.log("Creating a new user...");
+          userData = await createNewUser();
+        }
+
+        setUserData(userData);
+        setClientID(userData.uuid);
+
+        const ws = new WebSocket(
+          process.env.NEXT_PUBLIC_WEBSOCKET_URL || "ws://localhost:8080",
+        );
+        setSocket(ws);
+
+        ws.onopen = () => {
+          console.log("Connected to WebSocket");
+          ws.send(JSON.stringify({ type: "identity", id: userData.id }));
+        };
+
+        ws.onclose = () => {
+          ws.send(JSON.stringify({ type: "disconnected" }));
+          console.log("WebSocket connection closed");
+        };
+
+        ws.onerror = (error) => {
+          console.error("WebSocket error:", error);
+        };
+
+        ws.onmessage = handleReceiveMessage;
+      } catch (e) {
+        console.error("Error initializing user:", e);
+      }
+    };
+
+    initializeUser();
 
     startCamera(localVideoRef, localStreamRef).catch((error) => {
       console.error("Error starting camera:", error);
     });
-
-    const ws = new WebSocket(
-      process.env.NEXT_PUBLIC_WEBSOCKET_URL || "ws://localhost:8080",
-    );
-    setSocket(ws);
-
-    ws.onopen = () => {
-      console.log("Connected to WebSocket");
-      ws.send(JSON.stringify({ type: "identity", id: id }));
-    };
-
-    ws.onclose = () => {
-      ws.send(JSON.stringify({ type: "disconnected" }));
-      console.log("WebSocket connection closed");
-    };
-
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
-
-    ws.onmessage = handleReceiveMessage;
 
     return () => {
       if (socket && socket.readyState === WebSocket.OPEN) {
@@ -312,7 +336,15 @@ export default function Meet() {
           localStreamRef={localStreamRef}
           remoteVideoRef={remoteVideoRef}
           socket={socket}
-          ChatDrawerComponent={<ChatDrawer message={message} messages={messages} setMessage={setMessage} handleSendMessage={handleSendMessage} socket={socket} />}
+          ChatDrawerComponent={
+            <ChatDrawer
+              message={message}
+              messages={messages}
+              setMessage={setMessage}
+              handleSendMessage={handleSendMessage}
+              socket={socket}
+            />
+          }
         />
         {/* Chat Window */}
         <ChatWindow
