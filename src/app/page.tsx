@@ -24,9 +24,12 @@ export default function Home() {
         with people around the world
       </p>
       {/* Call to Action */}
-      <button className="text-white bg-blue-500 cursor-pointer font-bold py-3 px-6 rounded-2xl shadow-lg transition-transform transform hover:scale-105 mb-12">
-        <a href="/meet">Start</a>
-      </button>
+      <a href="/meet">
+        <button className="text-white bg-blue-500 cursor-pointer font-bold py-3 px-6 rounded-2xl shadow-lg transition-transform transform hover:scale-105 mb-12">
+          Start
+        </button>
+      </a>
+      {/* Features Section */}
       {/* Guidelines */}
       <footer className="mt-auto text-black text-sm sm:text-base flex flex-col sm:flex-row gap-2 sm:gap-4 items-center justify-center">
         <span className="px-2 py-1  bg-opacity-20 rounded">Be nice</span>
