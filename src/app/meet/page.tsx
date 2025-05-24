@@ -79,7 +79,10 @@ export default function Meet() {
         case "matched":
           setMessages([]);
           setPeerData(parsedData.client);
-          // @ts-expect-error
+          if (userDataRef.current == null) {
+            console.error("userDataRef.current is null");
+            return;
+          }
           await startWebRTC(userDataRef.current?.uuid < parsedData.client.uuid);
           break;
 
