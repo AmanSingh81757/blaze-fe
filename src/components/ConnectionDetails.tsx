@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { UserData } from "@/app/meet/types";
 
 export function ConnectionDetails({

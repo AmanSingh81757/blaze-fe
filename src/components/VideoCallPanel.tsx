@@ -2,10 +2,6 @@
 
 import React, { useState } from "react";
 import {
-  FaMicrophone,
-  FaMicrophoneSlash,
-  FaVideo,
-  FaVideoSlash,
   FaPhoneSlash,
 } from "react-icons/fa";
 import { SettingsPopUp } from "./SettingsPopUp";
