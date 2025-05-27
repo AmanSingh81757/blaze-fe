@@ -338,6 +338,7 @@ export default function Meet() {
           localStreamRef={localStreamRef}
           remoteVideoRef={remoteVideoRef}
           socket={socket}
+          pcRef={pcRef}
           ChatDrawerComponent={
             <ChatDrawer
               message={message}
