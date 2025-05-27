@@ -8,6 +8,7 @@ import {
   FaVideoSlash,
   FaPhoneSlash,
 } from "react-icons/fa";
+import { SettingsPopUp } from "./SettingsPopUp";
 
 export function VideoCallPanel({
   localVideoRef,
@@ -15,6 +16,7 @@ export function VideoCallPanel({
   remoteVideoRef,
   className,
   socket,
+  pcRef,
   ChatDrawerComponent,
 }: {
   localVideoRef: React.RefObject<HTMLVideoElement | null>;
@@ -22,8 +24,10 @@ export function VideoCallPanel({
   remoteVideoRef: React.RefObject<HTMLVideoElement | null>;
   className?: string;
   socket: WebSocket | null;
+  pcRef: React.RefObject<RTCPeerConnection | null>;
   ChatDrawerComponent: React.ReactNode;
 }) {
+  console.log(pcRef);
   const [isMicOn, setIsMicOn] = useState(true);
   const [isCameraOn, setIsCameraOn] = useState(true);
 
@@ -75,17 +79,20 @@ export function VideoCallPanel({
 
   return (
     <div
-      className={`relative w-full bg-gray-400 rounded-lg overflow-hidden ${className} h-[calc(100vh-120px)]`}
+      className={`relative group w-full bg-gray-400 rounded-lg overflow-hidden ${className} h-[calc(100vh-120px)]`}
     >
-      <div className="h-full w-full">
+      <div className="absolute top-5 left-5"><p className="text-white font-bold opacity-50">Blaze</p></div>
+      <div className="h-full w-full group">
         <video
           ref={remoteVideoRef}
           className="h-full w-full object-cover"
           autoPlay
           playsInline
         />
+        <div className="pointer-events-none absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-black/20 to-transparent opacity-100 transition-opacity duration-300 group-hover:opacity-0 z-10" />
+        <div className="pointer-events-none absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-black/20 to-transparent opacity-100 transition-opacity duration-300 group-hover:opacity-0 z-10" />
       </div>
-      <div className="absolute bottom-4 right-4 w-[180px] h-[120px] rounded-lg overflow-hidden border-2 border-white shadow-lg">
+      <div className="absolute bottom-20 right-4 w-[180px] h-[120px] rounded-lg overflow-hidden border-2 border-white shadow-lg sm:bottom-4 group-hover:bottom-20 sm:group-hover:bottom-6 sm:group-hover:right-6 transition-all duration-300">
         <video
           ref={localVideoRef}
           className="h-full w-full object-cover"
@@ -94,61 +101,33 @@ export function VideoCallPanel({
           muted
         />
       </div>
-      {/* Mic and Camera Status */}
-      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex items-center space-x-4">
+      <div className="absolute top-5 sm:top-0 sm:opacity-0 right-5 group-hover:top-5 group-hover:opacity-100 transition-all duration-300">
+        <SettingsPopUp
+          isMicOn={isMicOn}
+          isCameraOn={isCameraOn}
+          handleMicToggle={handleMicToggle}
+          handleCameraToggle={handleCameraToggle}
+        />
+      </div>
+      <div className="absolute bottom-6 sm:bottom-0 sm:opacity-0 left-1/2 transform -translate-x-1/2 flex items-center space-x-4 group-hover:bottom-6 group-hover:opacity-100 transition-all duration-300">
         {ChatDrawerComponent}
-        {/* Mic Toggle Button */}
-        <button
-          className="w-12 h-12 flex items-center justify-center rounded-full bg-[#38b6ff] text-white"
-          aria-label="Toggle Mic"
-          onClick={handleMicToggle}
-        >
-          {isMicOn ? (
-            <FaMicrophone
-              size={20}
-              className="transition-transform duration-300 ease-in-out transform scale-100"
-            />
-          ) : (
-            <FaMicrophoneSlash
-              size={20}
-              className="transition-transform duration-300 ease-in-out transform scale-100"
-            />
-          )}
-        </button>
-
-        {/* Camera Toggle Button */}
-        <button
-          className="w-12 h-12 flex items-center justify-center rounded-full bg-[#38b6ff] text-white"
-          aria-label="Toggle Camera"
-          onClick={handleCameraToggle}
-        >
-          {isCameraOn ? (
-            <FaVideo
-              size={20}
-              className="transition-transform duration-300 ease-in-out transform scale-100"
-            />
-          ) : (
-            <FaVideoSlash
-              size={20}
-              className="transition-transform duration-300 ease-in-out transform scale-100"
-            />
-          )}
-        </button>
-
-        {/* End Chat Button */}
-        <button
-          className="w-20 h-12 flex items-center justify-center rounded-lg bg-[#ff5757] text-white"
-          aria-label="End Chat"
-          onClick={handleEndChat}
-        >
-          <FaPhoneSlash size={20} />
-        </button>
-        <button
-          className="bg-blue-500 text-white font-bold py-2 px-4 rounded cursor-pointer"
-          onClick={handleJoin}
-        >
-          Join
-        </button>
+        {pcRef.current == null ? (
+          <button
+            className="bg-blue-500 text-white font-bold py-2 px-4 rounded cursor-pointer"
+            aria-label="Join Chat"
+            onClick={handleJoin}
+          >
+            Join
+          </button>
+        ) : (
+          <button
+            className="w-20 h-12 flex items-center justify-center rounded-lg bg-[#ff1313] text-white"
+            aria-label="End Chat"
+            onClick={handleEndChat}
+          >
+            <FaPhoneSlash size={20} />
+          </button>
+        )}
         <button
           className="bg-blue-500 text-white font-bold py-2 px-4 rounded cursor-pointer"
           onClick={handleShuffle}
