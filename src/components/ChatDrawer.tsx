@@ -54,12 +54,11 @@ export function ChatDrawer({
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger asChild>
         <button
-          className="w-12 h-12 flex items-center justify-center rounded-full bg-[#38b6ff] text-white md:hidden"
+          className="w-12 h-12 flex items-center justify-center rounded-full bg-blue-500 hover:opacity-90 text-white md:hidden cursor-pointer"
           aria-label="Toggle Chat"
         >
           <MessageSquare
             size={20}
-            className="transition-transform duration-300 ease-in-out transform scale-100"
           />
         </button>
       </DrawerTrigger>

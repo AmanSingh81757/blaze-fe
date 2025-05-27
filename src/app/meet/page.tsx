@@ -357,6 +357,7 @@ export default function Meet() {
           setMessage={setMessage}
           handleSendMessage={handleSendMessage}
           socket={socket}
+          pcRef={pcRef}
         />
       </section>
     </main>

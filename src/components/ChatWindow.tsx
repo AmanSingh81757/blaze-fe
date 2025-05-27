@@ -10,6 +10,7 @@ export function ChatWindow({
   handleSendMessage,
   socket,
   className,
+  pcRef,
 }: {
   messages: ChatMessage[];
   message: string;
@@ -17,6 +18,7 @@ export function ChatWindow({
   handleSendMessage: () => void;
   socket: WebSocket | null;
   className?: string;
+  pcRef: React.RefObject<RTCPeerConnection | null>;
 }) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -41,46 +43,56 @@ export function ChatWindow({
       <div className="p-3 border-b border-gray-300">
         <h2 className="font-semibold">Chat</h2>
       </div>
-      <div className="flex-1 p-4 overflow-y-auto">
-        <div className="flex flex-col space-y-3">
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={`flex ${message.isSelf ? "justify-end" : "justify-start"}`}
-            >
-              <div
-                className={`max-w-[80%] px-4 py-2 rounded-xl ${
-                  message.isSelf
-                    ? "bg-blue-500 text-white rounded-br-none"
-                    : "bg-gray-200 text-gray-800 rounded-bl-none"
-                }`}
-              >
-                <p>{message.message}</p>
-              </div>
+      {pcRef.current ? (
+        <>
+          <div className="flex-1 p-4 overflow-y-auto">
+            <div className="flex flex-col space-y-3">
+              {messages.map((message, index) => (
+                <div
+                  key={index}
+                  className={`flex ${message.isSelf ? "justify-end" : "justify-start"}`}
+                >
+                  <div
+                    className={`max-w-[80%] px-4 py-2 rounded-xl ${
+                      message.isSelf
+                        ? "bg-blue-500 text-white rounded-br-none"
+                        : "bg-gray-200 text-gray-800 rounded-bl-none"
+                    }`}
+                  >
+                    <p>{message.message}</p>
+                  </div>
+                </div>
+              ))}
+              <div ref={messagesEndRef} />
             </div>
-          ))}
-          <div ref={messagesEndRef} />
+          </div>
+          <div className="flex justify-between gap-2 border-t border-gray-300 p-2">
+            <input
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={handleKeyDown}
+              type="text"
+              placeholder="Type a message..."
+              className="rounded p-2 w-full"
+            />
+            <button
+              className="bg-blue-500 text-white font-bold py-2 px-4 rounded-md"
+              onClick={handleSendMessage}
+              disabled={
+                message.trim() === "" || socket?.readyState !== WebSocket.OPEN
+              }
+            >
+              <Send className="h-4 w-4" />
+            </button>
+          </div>
+        </>
+      ) : (
+        <div className="flex-1 p-4 overflow-y-auto">
+          <p className="text-gray-500 text-center items-center justify-center flex h-full">
+            Join a call to start chatting!
+          </p>
         </div>
-      </div>
-      <div className="flex justify-between gap-2 border-t border-gray-300 p-2">
-        <input
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyDown={handleKeyDown}
-          type="text"
-          placeholder="Type a message..."
-          className="rounded p-2 w-full"
-        />
-        <button
-          className="bg-blue-500 text-white font-bold py-2 px-4 rounded-md"
-          onClick={handleSendMessage}
-          disabled={
-            message.trim() === "" || socket?.readyState !== WebSocket.OPEN
-          }
-        >
-          <Send className="h-4 w-4" />
-        </button>
-      </div>
+      )}
     </section>
   );
 }
