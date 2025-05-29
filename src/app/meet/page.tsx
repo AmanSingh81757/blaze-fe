@@ -140,7 +140,7 @@ export default function Meet() {
 
   async function startCamera(
     localVideoRef: React.RefObject<HTMLVideoElement | null>,
-    localStreamRef: React.RefObject<MediaStream | null>,
+    localStreamRef: React.RefObject<MediaStream | null>
   ) {
     const localStream = await navigator.mediaDevices.getUserMedia({
       video: true,
@@ -273,7 +273,7 @@ export default function Meet() {
         setUserData(userData);
 
         const ws = new WebSocket(
-          process.env.NEXT_PUBLIC_WEBSOCKET_URL || "ws://localhost:8080",
+          process.env.NEXT_PUBLIC_WEBSOCKET_URL || "ws://localhost:8080"
         );
         setSocket(ws);
 
@@ -346,6 +346,7 @@ export default function Meet() {
               setMessage={setMessage}
               handleSendMessage={handleSendMessage}
               socket={socket}
+              pcRef={pcRef}
             />
           }
         />
