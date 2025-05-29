@@ -72,5 +72,6 @@ jobs:
             docker run -d \
               --name ${{ env.PROJECT_NAME }} \
               --restart unless-stopped \
+              -e NODE_ENV=staging \
               -p ${{ env.HOST_PORT }}:${{ env.TARGET_PORT }} \
               ${{ env.DOCKER_IMAGE }}:${{ steps.version.outputs.version }}
