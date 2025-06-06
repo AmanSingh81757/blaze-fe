@@ -4,7 +4,7 @@ export function VideoPlayer({
     videoRef: React.RefObject<HTMLVideoElement | null>;
     muted?: boolean;
   }) {
-  console.log(videoRef)
+
     return (
         <video
           ref={videoRef}

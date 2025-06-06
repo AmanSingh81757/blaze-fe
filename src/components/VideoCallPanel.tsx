@@ -53,6 +53,13 @@ export function VideoCallPanel({
   };
 
   const handleEndChat = () => {
+    if (!socket) {
+      console.error("Error: Socket is not initialized. Socket: ", socket);
+      return;
+    }
+
+    socket.send(JSON.stringify({ type: "end" }));
+
     console.log("End chat button pressed");
   };
 
