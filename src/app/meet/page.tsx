@@ -283,7 +283,6 @@ export default function Meet() {
         };
 
         ws.onclose = () => {
-          ws.send(JSON.stringify({ type: "disconnected" }));
           console.log("WebSocket connection closed");
         };
 

@@ -4,7 +4,8 @@ export function VideoPlayer({
     videoRef: React.RefObject<HTMLVideoElement | null>;
     muted?: boolean;
   }) {
-  console.log(videoRef)
+
+  // pass the state as prop here and show different video player based on the state
     return (
         <video
           ref={videoRef}
