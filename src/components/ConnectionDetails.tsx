@@ -1,4 +1,4 @@
-import { UserData } from "@/app/meet/types";
+import { UserData, UserState } from "@/app/meet/types";
 
 export function ConnectionDetails({
   client,
@@ -15,10 +15,19 @@ export function ConnectionDetails({
           <span className="opacity-80 ">{client?.username || "—"}</span>
         </div>
         <div className="border-l border-gray-600 h-6 opacity-40"></div>
-        {/* remove the connected with when not connected to ws */}
         <div className="flex flex-col text-center truncate max-w-[150px] text-ellipsis overflow-hidden">
-          <span className="font-medium">Connected with</span>
-          <span className="opacity-80">{target?.username || "Waiting..."}</span>
+          {client?.state === UserState.Waiting && (
+            <>
+              <span className="font-medium">Waiting for a match...</span>
+              <span className="opacity-80">Please hold on</span>
+            </>
+          )}
+          {client?.state === UserState.Matched && (
+            <>
+              <span className="font-medium">Matched with</span>
+              <span className="opacity-80">{target?.username || "—"}</span>
+            </>
+          )}
         </div>
       </div>
     </nav>

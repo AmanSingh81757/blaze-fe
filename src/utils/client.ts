@@ -1,4 +1,4 @@
-import { UserData } from "@/app/meet/types";
+import { UserData, UserState } from "@/app/meet/types";
 
 export const verifyExistingUser = async () => {
   const id = localStorage.getItem("userId");
@@ -12,6 +12,7 @@ export const verifyExistingUser = async () => {
       uuid,
       username,
       token,
+      state: UserState.Disconnected
     };
     try {
       const response = await fetch(
@@ -29,12 +30,7 @@ export const verifyExistingUser = async () => {
         throw new Error("Verification failed");
       }
 
-      return {
-        id: parseInt(id),
-        uuid,
-        username,
-        token,
-      };
+      return userData;
     } catch (error) {
       console.error("User verification failed:", error);
       return null;
@@ -67,6 +63,7 @@ export const createNewUser = async () => {
     localStorage.setItem("username", data.username);
     localStorage.setItem("userToken", data.token);
 
+    data.state = UserState.Disconnected; // Set initial state
     return data;
   } catch (error) {
     console.error("Failed to create new user:", error);
