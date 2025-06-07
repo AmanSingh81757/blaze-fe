@@ -5,6 +5,7 @@ import { SettingsPopUp } from "./SettingsPopUp";
 import { VideoPanelButtons } from "./VideoPanelButtons";
 import { VideoPlayer } from "./VideoPlayer";
 import { ClientVideoPanelIcons } from "./ClientVideoPanelIcons";
+import { UserState } from "@/app/meet/types";
 
 export function VideoCallPanel({
   localVideoRef,
@@ -12,16 +13,18 @@ export function VideoCallPanel({
   remoteVideoRef,
   className,
   socket,
-  pcRef,
   ChatDrawerComponent,
+  changeUserState,
+  userDataState,
 }: {
   localVideoRef: React.RefObject<HTMLVideoElement | null>;
   localStreamRef: React.RefObject<MediaStream | null>;
   remoteVideoRef: React.RefObject<HTMLVideoElement | null>;
   className?: string;
   socket: WebSocket | null;
-  pcRef: React.RefObject<RTCPeerConnection | null>;
   ChatDrawerComponent: React.ReactNode;
+  changeUserState: (state: UserState) => void;
+  userDataState: UserState | undefined;
 }) {
   const [isMicOn, setIsMicOn] = useState(true);
   const [isCameraOn, setIsCameraOn] = useState(true);
@@ -69,6 +72,7 @@ export function VideoCallPanel({
       return;
     }
     socket.send(JSON.stringify({ type: "join" }));
+    changeUserState(UserState.Waiting);
   };
 
   const handleShuffle = () => {
@@ -77,6 +81,7 @@ export function VideoCallPanel({
       return;
     }
     socket.send(JSON.stringify({ type: "rematch" }));
+    changeUserState(UserState.Waiting);
   };
 
   useEffect(() => {
@@ -122,10 +127,10 @@ export function VideoCallPanel({
       <div className="absolute bottom-6 sm:bottom-0 sm:opacity-0 left-1/2 transform -translate-x-1/2 flex items-center space-x-4 group-hover:bottom-6 group-hover:opacity-100 transition-all duration-300">
         {ChatDrawerComponent}
         <VideoPanelButtons
-          pcRef={pcRef}
           handleJoin={handleJoin}
           handleEndChat={handleEndChat}
           handleShuffle={handleShuffle}
+          userDataState={userDataState}
         />
       </div>
     </div>

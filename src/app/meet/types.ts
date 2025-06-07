@@ -3,6 +3,7 @@ export interface BaseMessage {
     | "message"
     | "matched"
     | "disconnected"
+    | "peer_disconnected"
     | "ice-candidate"
     | "sdp-offer"
     | "sdp-answer";
@@ -21,6 +22,10 @@ export interface MatchedMessage extends BaseMessage {
 
 export interface DisconnectedMessage extends BaseMessage {
   type: "disconnected";
+}
+
+export interface PeerDisconnectedMessage extends BaseMessage {
+  type: "peer_disconnected";
 }
 
 export interface IceCandidateMessage extends BaseMessage {
@@ -42,13 +47,22 @@ export type WebSocketMessage =
   | ChatMessage
   | MatchedMessage
   | DisconnectedMessage
+  | PeerDisconnectedMessage
   | IceCandidateMessage
   | SDPMessage
   | SDPAnswerMessage;
+
+export enum UserState {
+  Connected = "connected",
+  Waiting = "waiting",
+  Matched = "matched",
+  Disconnected = "disconnected",
+}
 
 export interface UserData {
   id: number;
   uuid: string;
   username: string;
   token: string;
+  state: UserState;
 }
