@@ -2,13 +2,11 @@
 import { UserState } from "@/app/meet/types";
 
 export function VideoPanelButtons({
-  pcRef,
   handleJoin,
   handleEndChat,
   handleShuffle,
   userDataState,
 }: {
-  pcRef: React.RefObject<RTCPeerConnection | null>;
   handleJoin: () => void;
   handleEndChat: () => void;
   handleShuffle: () => void;

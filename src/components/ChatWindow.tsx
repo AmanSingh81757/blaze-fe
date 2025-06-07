@@ -1,7 +1,7 @@
 import React from "react";
 import { useRef, useEffect } from "react";
 import { Send } from "lucide-react";
-import { ChatMessage } from "@/app/meet/types";
+import { ChatMessage, UserState } from "@/app/meet/types";
 
 export function ChatWindow({
   messages,
@@ -10,7 +10,7 @@ export function ChatWindow({
   handleSendMessage,
   socket,
   className,
-  pcRef,
+  userDataState,
 }: {
   messages: ChatMessage[];
   message: string;
@@ -18,7 +18,7 @@ export function ChatWindow({
   handleSendMessage: () => void;
   socket: WebSocket | null;
   className?: string;
-  pcRef: React.RefObject<RTCPeerConnection | null>;
+  userDataState: UserState | undefined;
 }) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -43,7 +43,7 @@ export function ChatWindow({
       <div className="p-3 border-b border-gray-300">
         <h2 className="font-semibold">Chat</h2>
       </div>
-      {pcRef.current ? (
+      {userDataState === UserState.Matched ? (
         <>
           <div className="flex-1 p-4 overflow-y-auto">
             <div className="flex flex-col space-y-3">
@@ -89,7 +89,12 @@ export function ChatWindow({
       ) : (
         <div className="flex-1 p-4 overflow-y-auto">
           <p className="text-gray-500 text-center items-center justify-center flex h-full">
-            Join a call to start chatting!
+            {userDataState === UserState.Connected &&
+              "Join a call to start chatting!"}
+            {userDataState === UserState.Waiting &&
+              "Waiting for someone to connect"}
+            {userDataState === UserState.Disconnected &&
+              "Could not connect at the moment. Please refresh"}
           </p>
         </div>
       )}

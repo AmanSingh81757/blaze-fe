@@ -13,7 +13,6 @@ export function VideoCallPanel({
   remoteVideoRef,
   className,
   socket,
-  pcRef,
   ChatDrawerComponent,
   changeUserState,
   userDataState,
@@ -23,7 +22,6 @@ export function VideoCallPanel({
   remoteVideoRef: React.RefObject<HTMLVideoElement | null>;
   className?: string;
   socket: WebSocket | null;
-  pcRef: React.RefObject<RTCPeerConnection | null>;
   ChatDrawerComponent: React.ReactNode;
   changeUserState: (state: UserState) => void;
   userDataState: UserState | undefined;
@@ -129,7 +127,6 @@ export function VideoCallPanel({
       <div className="absolute bottom-6 sm:bottom-0 sm:opacity-0 left-1/2 transform -translate-x-1/2 flex items-center space-x-4 group-hover:bottom-6 group-hover:opacity-100 transition-all duration-300">
         {ChatDrawerComponent}
         <VideoPanelButtons
-          pcRef={pcRef}
           handleJoin={handleJoin}
           handleEndChat={handleEndChat}
           handleShuffle={handleShuffle}
