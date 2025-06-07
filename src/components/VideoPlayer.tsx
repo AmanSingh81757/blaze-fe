@@ -5,6 +5,7 @@ export function VideoPlayer({
     muted?: boolean;
   }) {
 
+  // pass the state as prop here and show different video player based on the state
     return (
         <video
           ref={videoRef}

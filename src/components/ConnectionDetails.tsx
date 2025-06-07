@@ -15,6 +15,7 @@ export function ConnectionDetails({
           <span className="opacity-80 ">{client?.username || "—"}</span>
         </div>
         <div className="border-l border-gray-600 h-6 opacity-40"></div>
+        {/* remove the connected with when not connected to ws */}
         <div className="flex flex-col text-center truncate max-w-[150px] text-ellipsis overflow-hidden">
           <span className="font-medium">Connected with</span>
           <span className="opacity-80">{target?.username || "Waiting..."}</span>
