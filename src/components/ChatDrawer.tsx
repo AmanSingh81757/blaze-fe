@@ -13,7 +13,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { MessageSquare, Send, X } from "lucide-react";
-import { ChatMessage } from "@/app/meet/types";
+import { ChatMessage, UserState } from "@/app/meet/types";
 
 export function ChatDrawer({
   message,
@@ -21,14 +21,14 @@ export function ChatDrawer({
   setMessage,
   handleSendMessage,
   socket,
-  pcRef,
+  userDataState
 }: {
   message: string;
   messages: ChatMessage[];
   setMessage: (msg: string) => void;
   handleSendMessage: () => void;
-  socket: WebSocket | null;
-  pcRef: React.RefObject<RTCPeerConnection | null>;
+    socket: WebSocket | null;
+  userDataState: UserState | undefined
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -77,7 +77,7 @@ export function ChatDrawer({
             Chat with your video call participants
           </DrawerDescription>
         </DrawerHeader>
-        {pcRef.current ? (
+        {userDataState === UserState.Matched ? (
           <>
             <div className="flex-1 p-4 overflow-y-auto h-[calc(85vh-180px)] sm:h-[calc(70vh-180px)]">
               <div className="flex flex-col space-y-3">
@@ -127,7 +127,12 @@ export function ChatDrawer({
         ) : (
           <div className="flex-1 p-4 overflow-y-auto h-[calc(85vh-180px)]">
             <p className="text-gray-500 text-center items-center justify-center flex h-full">
-              Join a call to start chatting!
+              {userDataState === UserState.Connected &&
+                "Join a call to start chatting!"}
+              {userDataState === UserState.Waiting &&
+                "Waiting to connect to someone"}
+              {userDataState === UserState.Disconnected &&
+                "Could not connect at the moment. Please refresh"}
             </p>
           </div>
         )}

@@ -15,7 +15,7 @@ export function ConnectionDetails({
           <span className="opacity-80 ">{client?.username || "—"}</span>
         </div>
         <div className="border-l border-gray-600 h-6 opacity-40"></div>
-        <div className="flex flex-col text-center truncate max-w-[150px] text-ellipsis overflow-hidden">
+        <div className="flex flex-col text-center truncate max-w-[165px] text-ellipsis overflow-hidden">
           {client?.state === UserState.Waiting && (
             <>
               <span className="font-medium">Waiting for a match...</span>

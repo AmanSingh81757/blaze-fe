@@ -36,7 +36,7 @@ export default function Meet() {
     const updatedUserData = { ...userDataRef.current, state };
     setUserData(updatedUserData);
     userDataRef.current = updatedUserData;
-  }
+  };
 
   const handleReceiveMessage = async (event: MessageEvent) => {
     try {
@@ -369,8 +369,8 @@ export default function Meet() {
           localStreamRef={localStreamRef}
           remoteVideoRef={remoteVideoRef}
           socket={socket}
-          pcRef={pcRef}
           changeUserState={changeUserState}
+          userDataState={userData?.state}
           ChatDrawerComponent={
             <ChatDrawer
               message={message}
@@ -378,7 +378,7 @@ export default function Meet() {
               setMessage={setMessage}
               handleSendMessage={handleSendMessage}
               socket={socket}
-              pcRef={pcRef}
+              userDataState={userData?.state}
             />
           }
         />
@@ -390,7 +390,7 @@ export default function Meet() {
           setMessage={setMessage}
           handleSendMessage={handleSendMessage}
           socket={socket}
-          pcRef={pcRef}
+          userDataState={userData?.state}
         />
       </section>
     </main>
