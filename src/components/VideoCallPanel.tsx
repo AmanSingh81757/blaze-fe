@@ -5,6 +5,7 @@ import { SettingsPopUp } from "./SettingsPopUp";
 import { VideoPanelButtons } from "./VideoPanelButtons";
 import { VideoPlayer } from "./VideoPlayer";
 import { ClientVideoPanelIcons } from "./ClientVideoPanelIcons";
+import { UserState } from "@/app/meet/types";
 
 export function VideoCallPanel({
   localVideoRef,
@@ -14,6 +15,7 @@ export function VideoCallPanel({
   socket,
   pcRef,
   ChatDrawerComponent,
+  changeUserState,
 }: {
   localVideoRef: React.RefObject<HTMLVideoElement | null>;
   localStreamRef: React.RefObject<MediaStream | null>;
@@ -22,6 +24,7 @@ export function VideoCallPanel({
   socket: WebSocket | null;
   pcRef: React.RefObject<RTCPeerConnection | null>;
   ChatDrawerComponent: React.ReactNode;
+  changeUserState: (state: UserState) => void;
 }) {
   const [isMicOn, setIsMicOn] = useState(true);
   const [isCameraOn, setIsCameraOn] = useState(true);
@@ -69,6 +72,7 @@ export function VideoCallPanel({
       return;
     }
     socket.send(JSON.stringify({ type: "join" }));
+    changeUserState(UserState.Waiting);
   };
 
   const handleShuffle = () => {
@@ -77,6 +81,7 @@ export function VideoCallPanel({
       return;
     }
     socket.send(JSON.stringify({ type: "rematch" }));
+    changeUserState(UserState.Waiting);
   };
 
   useEffect(() => {

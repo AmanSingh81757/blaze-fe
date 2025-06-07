@@ -12,6 +12,7 @@ import {
   IceCandidateMessage,
   SDPMessage,
   SDPAnswerMessage,
+  UserState,
 } from "@/app/meet/types";
 
 export default function Meet() {
@@ -26,6 +27,16 @@ export default function Meet() {
   const localStreamRef = useRef<MediaStream | null>(null);
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
+
+  const changeUserState = (state: UserState) => {
+    if (!userDataRef.current) {
+      console.error("userDataRef.current is null");
+      return;
+    }
+    const updatedUserData = { ...userDataRef.current, state };
+    setUserData(updatedUserData);
+    userDataRef.current = updatedUserData;
+  }
 
   const handleReceiveMessage = async (event: MessageEvent) => {
     try {
@@ -84,6 +95,24 @@ export default function Meet() {
             return;
           }
           await startWebRTC(userDataRef.current?.uuid < parsedData.client.uuid);
+          changeUserState(UserState.Matched);
+          break;
+
+        case "peer_disconnected":
+          setMessages([]);
+          setPeerData(null);
+
+          // Close WebRTC connection
+          if (pcRef.current) {
+            pcRef.current.close();
+            pcRef.current = null;
+            console.log("RTCPeerConnection closed.");
+          }
+
+          if (remoteVideoRef.current) {
+            remoteVideoRef.current.srcObject = null;
+          }
+          changeUserState(UserState.Waiting);
           break;
 
         case "disconnected":
@@ -100,6 +129,7 @@ export default function Meet() {
           if (remoteVideoRef.current) {
             remoteVideoRef.current.srcObject = null;
           }
+          changeUserState(UserState.Connected);
           break;
 
         default:
@@ -280,9 +310,11 @@ export default function Meet() {
         ws.onopen = () => {
           console.log("Connected to WebSocket");
           ws.send(JSON.stringify({ type: "identity", client: userData }));
+          changeUserState(UserState.Connected);
         };
 
         ws.onclose = () => {
+          changeUserState(UserState.Disconnected);
           console.log("WebSocket connection closed");
         };
 
@@ -338,6 +370,7 @@ export default function Meet() {
           remoteVideoRef={remoteVideoRef}
           socket={socket}
           pcRef={pcRef}
+          changeUserState={changeUserState}
           ChatDrawerComponent={
             <ChatDrawer
               message={message}
