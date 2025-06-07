@@ -53,10 +53,10 @@ export type WebSocketMessage =
   | SDPAnswerMessage;
 
 export enum UserState {
-  Connected = "connected", // show join
-  Waiting = "waiting", // show end
-  Matched = "matched", //show end
-  Disconnected = "disconnected", //disable join button when disconnected
+  Connected = "connected",
+  Waiting = "waiting",
+  Matched = "matched",
+  Disconnected = "disconnected",
 }
 
 export interface UserData {

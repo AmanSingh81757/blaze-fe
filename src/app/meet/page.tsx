@@ -371,6 +371,7 @@ export default function Meet() {
           socket={socket}
           pcRef={pcRef}
           changeUserState={changeUserState}
+          userDataState={userData?.state}
           ChatDrawerComponent={
             <ChatDrawer
               message={message}

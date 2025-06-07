@@ -16,6 +16,7 @@ export function VideoCallPanel({
   pcRef,
   ChatDrawerComponent,
   changeUserState,
+  userDataState,
 }: {
   localVideoRef: React.RefObject<HTMLVideoElement | null>;
   localStreamRef: React.RefObject<MediaStream | null>;
@@ -25,6 +26,7 @@ export function VideoCallPanel({
   pcRef: React.RefObject<RTCPeerConnection | null>;
   ChatDrawerComponent: React.ReactNode;
   changeUserState: (state: UserState) => void;
+  userDataState: UserState | undefined;
 }) {
   const [isMicOn, setIsMicOn] = useState(true);
   const [isCameraOn, setIsCameraOn] = useState(true);
@@ -131,6 +133,7 @@ export function VideoCallPanel({
           handleJoin={handleJoin}
           handleEndChat={handleEndChat}
           handleShuffle={handleShuffle}
+          userDataState={userDataState}
         />
       </div>
     </div>
