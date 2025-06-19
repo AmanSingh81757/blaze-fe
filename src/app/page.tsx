@@ -187,7 +187,7 @@ export default function LandingPage() {
                     <span className="bg-red-100 rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm">
                       ✗
                     </span>
-                    Don't:
+                    Don&apos;t:
                   </h3>
                   <ul className="space-y-3 text-slate-600">
                     <li className="flex items-start">
