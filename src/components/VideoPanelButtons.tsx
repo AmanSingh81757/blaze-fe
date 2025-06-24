@@ -13,39 +13,35 @@ export function VideoPanelButtons({
   userDataState: UserState | undefined;
 }) {
   return (
-    <>
-      {userDataState !== UserState.Matched && userDataState !== UserState.Waiting ? (
+    <div className="flex gap-4">
+      {userDataState !== UserState.Matched &&
+      userDataState !== UserState.Waiting ? (
         <button
-          className="w-12 h-12 px-8 font-semibold flex items-center justify-center rounded-lg bg-blue-500 hover:opacity-90 text-white cursor-pointer"
+          className="px-6 py-3 font-semibold rounded-2xl bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
           aria-label="Join Chat"
           onClick={handleJoin}
           disabled={userDataState === UserState.Disconnected}
         >
-          {/* <Phone size={20} /> */}
           Join
         </button>
       ) : (
         <button
-          className="w-12 h-12 px-8  flex font-semibold  items-center justify-center rounded-lg bg-[#ff1313] hover:opacity-90 text-white cursor-pointer"
+          className="px-5 py-3 font-semibold rounded-2xl bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
           aria-label="End Chat"
           onClick={handleEndChat}
         >
-            {/* <PhoneOff size={20} /> */}
-            {userDataState === UserState.Matched ? "End" : "Stop"}
+          {userDataState === UserState.Matched ? "End" : "Stop"}
         </button>
       )}
       {userDataState === UserState.Matched && (
         <button
-          className="w-12 h-12 px-8 flex font-semibold  items-center justify-center rounded-lg bg-blue-500 hover:opacity-90 text-white cursor-pointer"
+          className="px-6 py-3 font-semibold rounded-2xl bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
           aria-label="Skip Forward"
           onClick={handleShuffle}
         >
-          {/* <SkipForward
-          size={20}
-        /> */}
           Skip
         </button>
       )}
-    </>
+    </div>
   );
 }
