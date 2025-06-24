@@ -56,7 +56,7 @@ export function ChatDrawer({
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger asChild>
         <button
-          className="w-12 h-12 flex items-center justify-center rounded-lg bg-blue-500 hover:opacity-90 text-white md:hidden cursor-pointer"
+          className="w-12 h-12 flex items-center justify-center rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 hover:opacity-90 text-white md:hidden cursor-pointer"
           aria-label="Toggle Chat"
         >
           <MessageSquare size={20} />
@@ -89,8 +89,8 @@ export function ChatDrawer({
                     <div
                       className={`max-w-[80%] px-4 py-2 rounded-lg ${
                         message.isSelf
-                          ? "bg-blue-500 text-white rounded-br-none"
-                          : "bg-gray-200 text-gray-800 rounded-bl-none"
+                          ? "bg-purple-500 text-white rounded-br-none"
+                          : "bg-purple-200 text-gray-800 rounded-bl-none"
                       }`}
                     >
                       <p>{message.message}</p>
@@ -112,7 +112,7 @@ export function ChatDrawer({
                   className="flex-1 p-2"
                 />
                 <button
-                  className="bg-blue-500 text-white font-bold py-2 px-4 rounded-md"
+                  className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-bold py-2 px-4 rounded-md"
                   onClick={handleSendMessage}
                   disabled={
                     message.trim() === "" ||
