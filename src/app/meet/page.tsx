@@ -335,9 +335,16 @@ export default function Meet() {
     });
 
     return () => {
-      if (socket && socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify({ type: "disconnect" }));
-        socket.close();
+      if (socketRef.current) {
+        if (pcRef.current) {
+          socketRef.current.send(JSON.stringify({ type: "end" }));
+          pcRef.current.close();
+          pcRef.current = null;
+        } else {
+          socketRef.current.send(JSON.stringify({ type: "disconnect" }));
+        }
+        socketRef.current.close();
+        socketRef.current = null;
       }
     };
   }, []);
