@@ -89,14 +89,16 @@ export default function LandingPage() {
                   Start Chatting Now
                 </Button>
               </Link>
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-2 border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-slate-400 px-10 py-6 text-lg rounded-2xl transition-all duration-300"
-              >
-                <Users className="mr-3 h-5 w-5" />
-                How It Works
-              </Button>
+              <a href="#guidelines">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="border-2 border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-slate-400 px-10 py-6 text-lg rounded-2xl transition-all duration-300"
+                >
+                  <Users className="mr-3 h-5 w-5" />
+                  See Guidelines
+                </Button>
+              </a>
             </div>
           </div>
 
@@ -246,7 +248,7 @@ export default function LandingPage() {
                 <Instagram className="h-6 w-6 text-slate-600 group-hover:text-pink-500 transition-colors duration-300" />
               </a>
               <a
-                href="https://twitter.com/live.blazetv"
+                href="https://x.com/LiveBlazetv"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-white/80 backdrop-blur-sm rounded-2xl p-3 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 group"
